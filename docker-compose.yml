@@ -1,0 +1,54 @@
+---
+services:
+   ghost:
+     image: ghost:5-alpine # Use the latest stable Ghost version
+     restart: always
+     ports:
+       - "80:2368" # Map port 80 on your Pi to Ghost's port 2368
+#    networks:
+#      - ghost_network
+     volumes:
+       - ./content:/var/lib/ghost/content
+     env_file:
+       .env
+     environment:
+       NODE_ENV: developemnt
+       url: http://192.168.24.13
+       database__client: mysql
+       database__connection__host: db
+       database__connection__user: ghost
+       database__connection__password: tiger51
+       database__connection__database: ghost
+       mail__transport: SMTP
+       mail__from: jterry@gmail.com
+       mail__options__service: Google
+       mail__options__host: smtp.gmail.com
+       mail__options__port: 587
+       mail__options__secure: "false"
+       mail__options__auth__user: jterry801@gmail.com
+       mail__options__auth__pass: tzpr dtjl qmjw tzom
+     depends_on:
+       - db
+#    networks:
+#      - ghost_network
+
+# Optional: Add a database service like MySQL if you don't want to use SQLite
+
+   db:
+     image: mysql:8.0
+     restart: always
+     expose:
+       - "3306:3306"
+#    networks:
+#      - ghost_network
+     environment:
+       NODE_ENV: developemnt
+       MYSQL_ROOT_PASSWORD: tiger51
+       MYSQL_DATABASE: ghost
+       MYSQL_USER: ghost
+       MYSQL_PASSWORD: tiger51
+       volumes:
+         ./content/mysql:/var/lib/mysql
+#        ./mysql-init:/docker-entrypoint-initdb.d
+#    networks:
+#      - ghost_network
